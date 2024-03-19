@@ -33,7 +33,7 @@ colors = {0:(204,192,179),
           'bg':(187,173,160)}
 
 # game variables initialize
-board_values = [[0 for _ in range(4)] for _ in range(4)] # creates 4x4 board for game
+board_values = [[1024 for _ in range(4)] for _ in range(4)] # creates 4x4 board for game
 
 # draw backround for the board
 def draw_board():
@@ -53,7 +53,15 @@ def draw_pieces(board):
                 color = colors[value]
             else:
                 color = color['other']
-            pygame.draw.rect(screen, color, [j * 95 + 20, i * 95 + 20, 75, 75])
+            pygame.draw.rect(screen, color, [j * 95 + 20, i * 95 + 20, 75, 75], 0, 5)
+            if value > 0:
+                value_len = len(str(value))
+                font = pygame.font.Font('freesansbold.ttf', 48 - (5 * value_len))
+                value_text = font.render(str(value), True, value_color)
+                text_rect = value_text.get_rect(center = (j * 95 + 57, i * 95+ 57))
+                screen.blit(value_text, text_rect)
+                pygame.draw.rect(screen, 'black', [j * 95 + 20, i * 95 + 20, 75, 75], 2, 5)
+
 # main game loop
 run = True
 while run:
