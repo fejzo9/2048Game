@@ -33,7 +33,27 @@ colors = {0:(204,192,179),
           'bg':(187,173,160)}
 
 # game variables initialize
-board_values = [[1024 for _ in range(4)] for _ in range(4)] # creates 4x4 board for game
+board_values = [[0 for _ in range(4)] for _ in range(4)] # creates 4x4 board for game
+game_over = False
+spawn_new = True
+init_count = 0
+
+# spawn in new pieces randomly when turns start
+def new_pieces(board):
+    count = 0
+    full = False
+    while any(0 in row for row in board) and count < 1:
+        row = random.randint(0,3)
+        col = random.randint(0,3)
+        if board[row][col] == 0:
+            count+= 1
+            if random.randint(1,10) == 10:
+                board[row][col] = 4
+            else:
+                board[row][col] = 2
+    if count < 1:
+        full = True
+    return board, full
 
 # draw backround for the board
 def draw_board():
@@ -70,6 +90,10 @@ while run:
     # drawing board
     draw_board()
     draw_pieces(board_values)
+    if spawn_new or init_count<2:
+        board_values, game_over = new_pieces(board_values)
+        spawn_new = False
+        init_count+=1
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
