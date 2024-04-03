@@ -91,8 +91,22 @@ def take_turn(direc, board):
                     board[i][j - shift] = 0
                     merged[i][j - shift - 1] = True
     elif direc == 'RIGHT':
-        pass
-
+        for i in range(4):
+            for j in range(4):
+                shift = 0
+                for q in range(j):
+                    if board[i][3 - q] == 0:
+                        shift += 1
+                    if shift > 0:
+                        board[i][3 - j + shift] = board[i][3 - j]
+                        board[i][3 - j] = 0
+                    if 4 - j + shift <= 3:
+                        if board[i][4 - j + shift] == board[i][3 - j + shift] and \
+                              not merged[i][4 - j + shift] and not merged[i][3 - j + shift]:
+                            board[i][4 - j + shift] *= 2
+                            board[i][3 - j + shift] = 0
+                            merged[i][4 - j + shift] = True
+                            
     return board
 
 # spawn in new pieces randomly when turns start
