@@ -37,6 +37,36 @@ board_values = [[0 for _ in range(4)] for _ in range(4)] # creates 4x4 board for
 game_over = False
 spawn_new = True
 init_count = 0
+direction = ''
+
+# take your turn based on direction
+def take_turn(direc, board):
+    merged = [[False for _ in range(4)] for _ in range(4)]
+    if direc == 'UP':
+        for i in range(4):
+            for j in range(4):
+                shift = 0
+                if i>0:
+                    for q in range (i):
+                        if board[q][j] == 0:
+                            shift += 1
+                    if shift > 0:
+                        board[i - shift][j] = board[i][j]
+                        board[i][j] = 0
+                    if board[i - shift - 1][j] == board [i - shift][j] \
+                          and not merged[i - shift-1][j] and not merged[i - shift][j]:
+                        board[i - shift - 1][j] *= 2
+                        board[i - shift][j] = 0
+                        merged[i - shift - 1][j] = True
+                        
+    elif direc == 'DOWN':
+        pass
+    elif direc == "LEFT":
+        pass
+    elif direc == 'RIGHT':
+        pass
+
+    return board
 
 # spawn in new pieces randomly when turns start
 def new_pieces(board):
@@ -94,10 +124,24 @@ while run:
         board_values, game_over = new_pieces(board_values)
         spawn_new = False
         init_count+=1
+    if direction != '':
+        board_values = take_turn(direction, board_values)
+        direction = ''
+        spawn_new = True
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_UP:
+                direction = 'UP'
+            elif event.key == pygame.K_DOWN:
+                direction = 'DOWN'
+            elif event.key == pygame.K_LEFT:
+                direction = 'LEFT'
+            elif event.key == pygame.K_RIGHT:
+                direction = 'RIGHT'
+
 
     pygame.display.flip()
 pygame.quit()
