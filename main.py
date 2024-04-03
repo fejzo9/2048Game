@@ -45,7 +45,7 @@ def take_turn(direc, board):
     if direc == 'UP':
         for i in range(4):
             for j in range(4):
-                shift = 0
+                shift = 0 
                 if i>0:
                     for q in range (i):
                         if board[q][j] == 0:
@@ -60,7 +60,21 @@ def take_turn(direc, board):
                         merged[i - shift - 1][j] = True
                         
     elif direc == 'DOWN':
-        pass
+        for i in range(3):
+            for j in range(4):
+                shift = 0
+                for q in range(i + 1):
+                    if board[3 - q][j] == 0:
+                        shift += 1
+                if shift > 0:
+                    board[2 - i + shift][j] = board[2 - i][j]
+                    board[2 - i][j] = 0
+                if 3 - i + shift <= 3:
+                    if board[2 - i + shift][j] == board[3 - i + shift][j] and not merged[3 - i + shift][j]\
+                    and not merged[2 - i + shift][j]:
+                        board[3 - i + shift][j] *= 2
+                        board[2 - i + shift][j] = 0
+                        merged[3 - i + shift][j] = True
     elif direc == "LEFT":
         pass
     elif direc == 'RIGHT':
