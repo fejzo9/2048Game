@@ -197,7 +197,11 @@ while run:
             elif event.key == pygame.K_RIGHT:
                 direction = 'RIGHT'
     if score > high_score:
+       file = open('high_score','w')
        high_score = score	
+       high_score_string = str(score)
+       file.write(high_score_string)
+       file.close()
 
     pygame.display.flip()
 pygame.quit()
