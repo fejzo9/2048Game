@@ -38,9 +38,15 @@ game_over = False
 spawn_new = True
 init_count = 0
 direction = ''
+score = 0
+file = open('high_score','r')
+init_high = int(file.readline())
+file.close()
+high_score = init_high
 
-# take your turn based on direction
+# take your turn based on direction - heart of the game
 def take_turn(direc, board):
+    global score
     merged = [[False for _ in range(4)] for _ in range(4)]
     if direc == 'UP':
         for i in range(4):
@@ -56,6 +62,7 @@ def take_turn(direc, board):
                     if board[i - shift - 1][j] == board [i - shift][j] \
                           and not merged[i - shift-1][j] and not merged[i - shift][j]:
                         board[i - shift - 1][j] *= 2
+                        score += board[i - shift - 1][j]
                         board[i - shift][j] = 0
                         merged[i - shift - 1][j] = True
                         
@@ -73,6 +80,7 @@ def take_turn(direc, board):
                     if board[2 - i + shift][j] == board[3 - i + shift][j] and not merged[3 - i + shift][j]\
                     and not merged[2 - i + shift][j]:
                         board[3 - i + shift][j] *= 2
+                        score += board[3 - i + shift][j]
                         board[2 - i + shift][j] = 0
                         merged[3 - i + shift][j] = True
     elif direc == "LEFT":
@@ -88,6 +96,7 @@ def take_turn(direc, board):
                 if board[i][j - shift] == board[i][j - shift - 1] and not merged[i][j - shift - 1]\
                     and not merged[i][j - shift]:
                     board[i][j - shift - 1] *= 2
+                    score += board[i][j - shift - 1]
                     board[i][j - shift] = 0
                     merged[i][j - shift - 1] = True
     elif direc == 'RIGHT':
@@ -104,9 +113,10 @@ def take_turn(direc, board):
                         if board[i][4 - j + shift] == board[i][3 - j + shift] and \
                               not merged[i][4 - j + shift] and not merged[i][3 - j + shift]:
                             board[i][4 - j + shift] *= 2
+                            score += board[i][4 - j + shift]
                             board[i][3 - j + shift] = 0
                             merged[i][4 - j + shift] = True
-                            
+
     return board
 
 # spawn in new pieces randomly when turns start
@@ -129,6 +139,10 @@ def new_pieces(board):
 # draw backround for the board
 def draw_board():
     pygame.draw.rect(screen, colors['bg'], [0, 0, 400, 400], 0, 10)
+    score_text = font.render(f'Score: {score}', True, 'black')
+    high_score_text = font.render(f'High Score: {high_score}', True, 'black')
+    screen.blit(score_text, (10, 410))
+    screen.blit(high_score_text, (10, 450))
     pass
 
 #draw tiles for game
@@ -182,7 +196,8 @@ while run:
                 direction = 'LEFT'
             elif event.key == pygame.K_RIGHT:
                 direction = 'RIGHT'
-
+    if score > high_score:
+       high_score = score	
 
     pygame.display.flip()
 pygame.quit()
